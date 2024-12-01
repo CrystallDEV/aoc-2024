@@ -1,21 +1,50 @@
+import kotlin.math.absoluteValue
+
 fun main() {
-    fun part1(input: List<String>): Int {
-        return input.size
+    fun parseInput(input: List<String>): Pair<List<Int>, List<Int>> {
+        val firstList = mutableListOf<Int>()
+        val secondList = mutableListOf<Int>()
+
+        input.map {
+            it.trim().split("   ")
+        }.forEach {
+            firstList.add(it[0].toInt())
+            secondList.add(it[1].toInt())
+        }
+
+        return firstList to secondList
     }
 
-    fun part2(input: List<String>): Int {
-        return input.size
+    fun part1(firstList: List<Int>, secondList: List<Int>): Int {
+        var totalDistance = 0
+
+        val sortedFirstList = firstList.sorted()
+        val sortedSecondList = secondList.sorted()
+
+        sortedFirstList.forEachIndexed { index, number ->
+            totalDistance += (number - sortedSecondList[index]).absoluteValue
+        }
+
+        return totalDistance
     }
 
-    // Test if implementation meets criteria from the description, like:
-    check(part1(listOf("test_input")) == 1)
+    fun part2(firstList: List<Int>, secondList: List<Int>): Int {
+        var totalDistance = 0
 
-    // Or read a large test input from the `src/Day01_test.txt` file:
+        firstList.forEach { number ->
+            totalDistance += number * secondList.filter { it == number }.size
+        }
+
+        return totalDistance
+    }
+
     val testInput = readInput("Day01_test")
-    check(part1(testInput) == 1)
+    val (testFirstList, testSecondList) = parseInput(testInput)
+    check(part1(testFirstList, testSecondList) == 11)
+    check(part2(testFirstList, testSecondList) == 31)
 
-    // Read the input from the `src/Day01.txt` file.
     val input = readInput("Day01")
-    part1(input).println()
-    part2(input).println()
+    val (firstList, secondList) = parseInput(input)
+    part1(firstList, secondList).println()
+    part2(firstList, secondList).println()
 }
